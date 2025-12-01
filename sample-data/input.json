@@ -3,8 +3,18 @@
     "new_agent": {
       "id": "8ab86c18-3fae-4804-bfd9-c3d6e8f66260",
       "name": "BoJack Horseman",
-      "primary_skillset": [
+      "primary_skillset": [],
+      "secondary_skillset": [
         "bills-questions"
+      ]
+    }
+  },
+  {
+    "new_agent": {
+      "id": "8ab86c18-3fae-4804-bfd9-c3d6e8f66280",
+      "name": "Joey Cowboy",
+      "primary_skillset": [
+        "rewards-question"
       ],
       "secondary_skillset": []
     }
@@ -14,6 +24,20 @@
       "id": "f26e890b-df8e-422e-a39c-7762aa0bac36",
       "type": "rewards-question",
       "urgent": false
+    }
+  },
+  {
+    "new_job": {
+      "id": "f26e890b-df8e-422e-a39c-7762aa0bac37",
+      "type": "babysitting",
+      "urgent": false
+    }
+  },
+  {
+    "new_job": {
+      "id": "f26e890b-df8e-422e-a39c-7762aa0bac38",
+      "type": "bills-questions",
+      "urgent": true
     }
   },
   {
@@ -50,6 +74,11 @@
   {
     "job_request": {
       "agent_id": "ed0e23ef-6c2b-430c-9b90-cd4f1ff74c88"
+    }
+  },
+  {
+    "job_request": {
+      "agent_id": "8ab86c18-3fae-4804-bfd9-c3d6e8f66280"
     }
   }
 ]
