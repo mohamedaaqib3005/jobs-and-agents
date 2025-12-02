@@ -19,10 +19,10 @@ function assignJobs(input) {
       agents.push(object.new_agent);
     }
     if (object.new_job) {
-      jobs.push(object.job_request);
+      jobs.push(object.new_job);
     }
     if (object.job_request) {
-      requests.push(object.new_job);
+      requests.push(object.job_request);
     }
   }
   jobs.sort((a, b) => b.urgent - a.urgent);
