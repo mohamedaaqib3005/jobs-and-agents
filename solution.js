@@ -12,7 +12,7 @@
 const { readFileSync } = require('fs');
 
 const input = JSON.parse(readFileSync('sample-data/input.json', 'utf8'));
-console.log(assignJobs(input));
+console.log("the input", input)
 
 function assignJobs(input) {
   let agents = [];
@@ -78,3 +78,4 @@ function assignJobs(input) {
 
 }
 
+console.log("the output ", assignJobs(input));
