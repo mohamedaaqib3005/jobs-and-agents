@@ -58,7 +58,7 @@ function assignJobs(input) {
     }
 
     for (let i = 0; i < jobs.length; i++) {
-      if (jobs[i].id == foundJob.id) {
+      if (jobs[i].id === foundJob.id) {
         for (let j = i; j < jobs.length - 1; j++) {
           jobs[j] = jobs[j + 1];
         }
