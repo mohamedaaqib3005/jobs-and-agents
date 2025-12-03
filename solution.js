@@ -13,69 +13,38 @@ const { readFileSync } = require('fs');
 
 const input = JSON.parse(readFileSync('sample-data/input.json', 'utf8'));
 console.log("the input", input)
-
 function assignJobs(input) {
-  let agents = [];
-  let requests = [];
-  let jobs = [];
-  for (let object of input) {
+  const agents = input
+    .filter(object => object.new_agent)
+    .map(object => object.new_agent);
 
-    if (object.new_agent) {
-      agents.push(object.new_agent);
-    }
-    if (object.new_job) {
-      jobs.push(object.new_job);
-    }
-    if (object.job_request) {
-      requests.push(object.job_request);
-    }
-  }
-  jobs.sort((a, b) => b.urgent - a.urgent);
-  let assignments = [];
-  for (let value of requests) {
-    let agentId = value.agent_id;
-    let agent;
-    for (let a of agents) {
-      if (a.id === agentId) {
-        agent = a;
-        break;
-      }
-    }
-    if (!agent)
-      continue;
-    let foundJob;
-    for (let job of jobs) {
-      if (job.type === agent.primary_skillset[0] || job.type === agent.secondary_skillset[0]) {
-        foundJob = job;
-        break;
-      }
+  const requests = input
+    .filter(object => object.job_request)
+    .map(object => object.job_request);
 
-    }
-    if (foundJob) {
-      assignments.push(
-        {
-          job_assigned: {
-            job_id: foundJob.id,
-            agent_id: agentId,
-          }
-        }
-      );
+  const jobs = input
+    .filter(object => object.new_job)
+    .map(object => object.new_job)
+    .sort((a, b) => b.urgent - a.urgent);
 
-      for (let i = 0; i < jobs.length; i++) {
-        if (jobs[i].id === foundJob.id) {
-          for (let j = i; j < jobs.length - 1; j++) {
-            jobs[j] = jobs[j + 1];
-          }
-          jobs.length -= 1
-        }
-      }
-    }
+  return requests.reduce((assignments, { agent_id }) => {
+    const agent = agents.find(a => a.id === agent_id);
 
-  }
+    if (!agent) return assignments;
 
-  return assignments;
+    const match = jobs.find(j =>
+      j.type === agent.primary_skillset[0] || j.type === agent.secondary_skillset[0]
+    );
 
+    if (!match) return assignments;
 
+    jobs.splice(jobs.indexOf(match), 1);
+
+    return [...assignments, {
+      job_assigned: { job_id: match.id, agent_id: agent_id }
+    }];
+
+  }, []);
 }
 
-console.log("the output ", assignJobs(input));
+console.log(assignJobs(input))
