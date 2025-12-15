@@ -37,36 +37,14 @@ function assignJobs(input) {
     //   || job.type === agent.secondary_skillset[0]
     // );// create func matchJobs
 
-    let match = null;
-    for (let i = 0; i < jobs.length; i++) {
-      const job = jobs[i];
-      for (let j = 0; j < agent.primary_skillset.length; j++) {
-        if (job.type === agent.primary_skillset[j]) {
-          match = job;
-          break;
-        }
-      }
-    }
-    if (!match) {
-      for (let i = 0; i < jobs.length; i++) {
-        const job = jobs[i];
+    const primarymatch = jobs.find((job) => agent.primary_skillset.includes(job.type))
 
-        for (let j = 0; j < agent.secondary_skillset.length; j++) {
-          if (job.type === agent.secondary_skillset[j]) {
-            match = job;
-            break;
-          }
-        }
+    const secondarymatch = jobs.find((job) => agent.secondary_skillset.includes(job.type))
 
-        if (match) break;
-      }
-    }
-
-
+    const match = primarymatch || secondarymatch;
     if (!match) return assignments;
 
-    jobs.splice(jobs.indexOf(match), 1);// side effects in hof no mutability inside hofs
-
+    jobs.splice(jobs.indexOf(match), 1);
     return [...assignments, {
       job_assigned: { job_id: match.id, agent_id: agent_id }
     }];
