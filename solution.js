@@ -39,7 +39,7 @@ function assignJobs(input) {
 
     let match = null;
     for (let i = 0; i < jobs.length; i++) {
-      const jobs = jobs[i];
+      const job = jobs[i];
       for (let j = 0; j < agent.primary_skillset.length; j++) {
         if (job.type === agent.primary_skillset[j]) {
           match = job;
@@ -61,16 +61,6 @@ function assignJobs(input) {
         if (match) break;
       }
     }
-    return [
-      ...assignments,
-      {
-        job_assigned: {
-          agent_id,
-          job_id: match.id
-        }
-      }
-    ];
-
 
 
     if (!match) return assignments;
