@@ -14,7 +14,7 @@ const { readFileSync } = require('fs');
 const input = JSON.parse(readFileSync('sample-data/input.json', 'utf8'));
 console.log("the input", input)
 function assignJobs(input) {
-  const agents = input
+  const agents = input// create a func called parseInput it should not be more than WET
     .filter(object => object.new_agent)
     .map(object => object.new_agent);
 
@@ -27,18 +27,55 @@ function assignJobs(input) {
     .map(object => object.new_job)
     .sort((a, b) => b.urgent - a.urgent);
 
-  return requests.reduce((assignments, { agent_id }) => {
-    const agent = agents.find(a => a.id === agent_id);
+  return requests.reduce((assignments, { agent_id }) => {//change to map
+    const agent = agents.find(a => a.id === agent_id); // create a func findAgentbyid
 
-    if (!agent) return assignments;
+    if (!agent) return assignments; // throw an error when there is no agent
 
-    const match = jobs.find(j =>
-      j.type === agent.primary_skillset[0] || j.type === agent.secondary_skillset[0]
-    );
+    // const match = jobs.find(job =>
+    //   job.type === agent.primary_skillset[0]//prioritise primary skillset and then check secondary skillset
+    //   || job.type === agent.secondary_skillset[0]
+    // );// create func matchJobs
+
+    let match = null;
+    for (let i = 0; i < jobs.length; i++) {
+      const jobs = jobs[i];
+      for (let j = 0; j < agent.primary_skillset.length; j++) {
+        if (job.type === agent.primary_skillset[j]) {
+          match = job;
+          break;
+        }
+      }
+    }
+    if (!match) {
+      for (let i = 0; i < jobs.length; i++) {
+        const job = jobs[i];
+
+        for (let j = 0; j < agent.secondary_skillset.length; j++) {
+          if (job.type === agent.secondary_skillset[j]) {
+            match = job;
+            break;
+          }
+        }
+
+        if (match) break;
+      }
+    }
+    return [
+      ...assignments,
+      {
+        job_assigned: {
+          agent_id,
+          job_id: match.id
+        }
+      }
+    ];
+
+
 
     if (!match) return assignments;
 
-    jobs.splice(jobs.indexOf(match), 1);
+    jobs.splice(jobs.indexOf(match), 1);// side effects in hof no mutability inside hofs
 
     return [...assignments, {
       job_assigned: { job_id: match.id, agent_id: agent_id }
@@ -48,3 +85,5 @@ function assignJobs(input) {
 }
 
 console.log(assignJobs(input))
+
+// make changes based on the  rule 5 only assign if it has primary skillset
