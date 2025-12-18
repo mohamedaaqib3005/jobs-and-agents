@@ -20,6 +20,7 @@ function parseInput(input, key) {
     .map(object => object[key])
 }
 
+
 function assignJobs(input) {
   const agents = parseInput(input, "new_agent");
   const requests = parseInput(input, "job_request");
@@ -29,25 +30,40 @@ function assignJobs(input) {
   function findAgentById(agent_id) {
     return agents.find(a => a.id === agent_id);
   }
-
-
-  return requests.reduce((assignments, { agent_id }) => {
+  const result = requests.reduce(({ assignments, remainingJobs }, { agent_id }) => {
     const agent = findAgentById(agent_id)
     if (!agent) throw new Error("agent not available");
 
-    const primaryMatch = jobs.find((job) => agent.primary_skillset.includes(job.type))
+    const primaryMatch = remainingJobs.find((job) => agent.primary_skillset.includes(job.type))
 
-    const match = primaryMatch || jobs.find((job) => agent.secondary_skillset.includes(job.type))
+    const match = primaryMatch || remainingJobs.find((job) => agent.secondary_skillset.includes(job.type))
 
-    if (!match) return assignments;
+    if (!match) return { assignments, remainingJobs };
 
-    jobs.splice(jobs.indexOf(match), 1);
-    return [...assignments, {
-      job_assigned: { job_id: match.id, agent_id: agent_id }
-    }];
+    // jobs.splice(jobs.indexOf(match), 1);
+    const index = remainingJobs.indexOf(match)
+    // remainingJobs.toSpliced(jobs.indexof(match), 1)
 
-  }, []);
+    return {
+      assignments: [
+        ...assignments,
+        { job_assigned: { job_id: match.id, agent_id } }
+      ],
+      remainingJobs: remainingJobs.toSpliced(index, 1)
+    }
+
+  }, {
+    assignments: [],
+    remainingJobs: jobs
+  });
+
+
+  const assignments = result.assignments;
+  return assignments;
+
 }
-
 console.log(assignJobs(input))
 
+// catch the error after throwing the error ;
+// h.o.f should  not perform  mutations (splice);
+// create a fn for reduce called generateAssignments;
